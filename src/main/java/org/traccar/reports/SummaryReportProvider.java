@@ -45,10 +45,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class SummaryReportProvider {
 
@@ -73,6 +70,26 @@ public class SummaryReportProvider {
                         new Condition.Equals("deviceId", deviceId),
                         new Condition.Between("fixTime", "from", from, "to", to)),
                 new Order("fixTime", end, 1)));
+    }
+
+    private double getMaxSpeed(long deviceId, Date from, Date to, boolean end) throws StorageException {
+        var positions = storage.getObjects(Position.class, new Request(
+                new Columns.All(),
+                new Condition.And(
+                        new Condition.Equals("deviceId", deviceId),
+                        new Condition.Between("fixTime", "from", from, "to", to)),
+                new Order("fixTime")));
+
+        double maxSpeed = Double.MIN_VALUE;
+
+        for (Position position : positions) {
+            double currentSpeed = position.getSpeed();
+
+            if (currentSpeed > maxSpeed) {
+                maxSpeed = currentSpeed;
+            }
+        }
+        return maxSpeed;
     }
 
     private Collection<SummaryReportItem> calculateDeviceResult(
@@ -116,7 +133,8 @@ public class SummaryReportProvider {
             if (durationMilliseconds > 0) {
                 result.setAverageSpeed(UnitsConverter.knotsFromMps(result.getDistance() * 1000 / durationMilliseconds));
             }
-
+            var maxSpeed = getMaxSpeed(device.getId(), from, to, false);
+            result.setMaxSpeed(maxSpeed);
             if (!ignoreOdometer
                     && first.getDouble(Position.KEY_ODOMETER) != 0 && last.getDouble(Position.KEY_ODOMETER) != 0) {
                 result.setStartOdometer(first.getDouble(Position.KEY_ODOMETER));
