@@ -15,6 +15,7 @@
  */
 package org.traccar.api.resource;
 
+import jakarta.mail.internet.MimeBodyPart;
 import org.traccar.api.BaseResource;
 import org.traccar.api.signature.TokenManager;
 import org.traccar.mail.MailManager;
@@ -63,7 +64,10 @@ public class PasswordResource extends BaseResource {
         if (user != null) {
             var velocityContext = textTemplateFormatter.prepareContext(permissionsService.getServer(), user);
             var fullMessage = textTemplateFormatter.formatMessage(velocityContext, "passwordReset", "full");
-            mailManager.sendMessage(user, true, fullMessage.getSubject(), fullMessage.getBody());
+            MimeBodyPart imageBodyPart = new MimeBodyPart();
+            imageBodyPart.attachFile("templates/images/ciblie.png");
+            imageBodyPart.setContentID("<companyLogo>");
+            mailManager.sendMessage(user, true, fullMessage.getSubject(), fullMessage.getBody(),imageBodyPart);
         }
         return Response.ok().build();
     }

@@ -20,14 +20,16 @@ import org.traccar.model.User;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeBodyPart;
 
+import java.io.IOException;
+
 public interface MailManager {
 
     boolean getEmailEnabled();
 
     void sendMessage(
-            User user, boolean system, String subject, String body) throws MessagingException;
+            User user, boolean system, String subject, String body) throws MessagingException, IOException;
 
     void sendMessage(
-            User user, boolean system, String subject, String body, MimeBodyPart attachment) throws MessagingException;
+            User user, boolean system, String subject, String body, MimeBodyPart attachment) throws MessagingException, IOException;
 
 }

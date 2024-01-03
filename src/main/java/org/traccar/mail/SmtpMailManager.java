@@ -33,6 +33,8 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
@@ -95,13 +97,13 @@ public final class SmtpMailManager implements MailManager {
 
     @Override
     public void sendMessage(
-            User user, boolean system, String subject, String body) throws MessagingException {
+            User user, boolean system, String subject, String body) throws MessagingException, IOException {
         sendMessage(user, system, subject, body, null);
     }
 
     @Override
     public void sendMessage(
-            User user, boolean system, String subject, String body, MimeBodyPart attachment) throws MessagingException {
+            User user, boolean system, String subject, String body, MimeBodyPart attachment) throws MessagingException, IOException {
 
         Properties properties = null;
         if (!config.getBoolean(Keys.MAIL_SMTP_IGNORE_USER_CONFIG)) {

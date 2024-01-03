@@ -28,6 +28,8 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.mail.MessagingException;
 
+import java.io.IOException;
+
 @Singleton
 public class NotificatorMail implements Notificator {
 
@@ -45,7 +47,7 @@ public class NotificatorMail implements Notificator {
         try {
             var fullMessage = notificationFormatter.formatMessage(user, event, position, "full");
             mailManager.sendMessage(user, false, fullMessage.getSubject(), fullMessage.getBody());
-        } catch (MessagingException e) {
+        } catch (MessagingException | IOException e) {
             throw new MessageException(e);
         }
     }

@@ -1003,7 +1003,7 @@ public final class Keys {
     public static final ConfigKey<Integer> MAIL_SMTP_PORT = new IntegerConfigKey(
             "mail.smtp.port",
             List.of(KeyType.CONFIG, KeyType.USER),
-            25);
+            465);
 
     /**
      * Email transport protocol. Default value is "smtp".
